@@ -1,0 +1,12 @@
+# Captured market data (regenerate with src/data/collect_market_data.py)
+data/raw/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# OS / editor cruft
+.DS_Store

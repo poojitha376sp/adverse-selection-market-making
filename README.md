@@ -27,10 +27,12 @@ research continues.
 
 Built day by day rather than in one sitting.
 
-- [ ] **Part 1 — Foundations** (Phase 1 Research + Phase 2 Data acquisition):
+- [x] **Part 1 — Foundations** (Phase 1 Research + Phase 2 Data acquisition):
   derive the Avellaneda-Stoikov reservation price/spread from the HJB
   equation by hand, stand up a real L2 + trade data pipeline (reusing the
-  informed-flow proxy from order-flow-imbalance / vpin-flow-toxicity).
+  informed-flow proxy from order-flow-imbalance / vpin-flow-toxicity). See
+  [`research/DERIVATION.md`](research/DERIVATION.md) and
+  [`src/data/collect_market_data.py`](src/data/collect_market_data.py).
 - [ ] **Part 2 — Core Mechanism** (Phase 3 Baseline implementation): the
   standard Avellaneda-Stoikov market maker, backtested for a reference
   PnL/inventory path.
