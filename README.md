@@ -33,9 +33,23 @@ Built day by day rather than in one sitting.
   informed-flow proxy from order-flow-imbalance / vpin-flow-toxicity). See
   [`research/DERIVATION.md`](research/DERIVATION.md) and
   [`src/data/collect_market_data.py`](src/data/collect_market_data.py).
-- [ ] **Part 2 — Core Mechanism** (Phase 3 Baseline implementation): the
+- [x] **Part 2 — Core Mechanism** (Phase 3 Baseline implementation): the
   standard Avellaneda-Stoikov market maker, backtested for a reference
-  PnL/inventory path.
+  PnL/inventory path. Reservation-price/spread formulas implemented in
+  [`src/model/avellaneda_stoikov.py`](src/model/avellaneda_stoikov.py);
+  parameter estimation (real realized volatility from captured
+  mid-price data, a crude real-data-informed fill-intensity fit, plus
+  the risk-aversion/horizon design choices) in
+  [`src/model/estimate_params.py`](src/model/estimate_params.py); the
+  chronological real-data backtest harness in
+  [`src/backtest/backtest_baseline.py`](src/backtest/backtest_baseline.py).
+  Backtested against a fresh ~240s BTCUSDT capture
+  (`data/raw/depth_btcusdt_20260723_094653.jsonl` +
+  `data/raw/trades_btcusdt_20260723_094653.jsonl`, gitignored — capture
+  is regenerable via `src/data/collect_market_data.py --duration 240`):
+  9 hypothetical fills (3 bid, 6 ask), inventory ranged −3 to 0 units,
+  naive mark-to-market PnL of −$2.96 over the window. Output series
+  written to `data/processed/` (gitignored, code only).
 - [ ] **Part 3 — Fitting & Extension** (Phase 4 Adverse-selection
   extension): augment the state with the informedness signal, both the
   heuristic-overlay and principled re-solved variants.

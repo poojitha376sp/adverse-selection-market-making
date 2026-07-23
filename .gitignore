@@ -1,6 +1,10 @@
 # Captured market data (regenerate with src/data/collect_market_data.py)
 data/raw/
 
+# Backtest/estimation output (regenerate with src/model/estimate_params.py
+# and src/backtest/backtest_baseline.py) -- code only is versioned.
+data/processed/
+
 # Python
 __pycache__/
 *.pyc
