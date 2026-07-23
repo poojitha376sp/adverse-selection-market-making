@@ -1,17 +1,12 @@
 # Market Making with Adverse Selection
 
-QuantFest (IICPC) project. Extends the classic Avellaneda-Stoikov
+Extends the classic Avellaneda-Stoikov
 inventory-risk market-making model to account for the probability that an
 incoming order is *informed* — so quoted spreads widen automatically when
 flow looks toxic, instead of running a fixed formula blind to who's on the
 other side of the trade. This is the difference between a textbook
 market-making model and how a real desk actually manages adverse
 selection.
-
-Part of a 4-project microstructure suite for QuantFest:
-[order-flow-imbalance](https://github.com/poojitha376sp/order-flow-imbalance) ·
-[vpin-flow-toxicity](https://github.com/poojitha376sp/vpin-flow-toxicity) ·
-[hawkes-fill-probability](https://github.com/poojitha376sp/hawkes-fill-probability)
 
 Status: core project complete (Parts 1-4); stretch goals not yet started.
 
@@ -29,8 +24,7 @@ Built day by day rather than in one sitting.
 
 - [x] **Part 1 — Foundations** (Phase 1 Research + Phase 2 Data acquisition):
   derive the Avellaneda-Stoikov reservation price/spread from the HJB
-  equation by hand, stand up a real L2 + trade data pipeline (reusing the
-  informed-flow proxy from order-flow-imbalance / vpin-flow-toxicity). See
+  equation by hand, stand up a real L2 + trade data pipeline. See
   [`research/DERIVATION.md`](research/DERIVATION.md) and
   [`src/data/collect_market_data.py`](src/data/collect_market_data.py).
 - [x] **Part 2 — Core Mechanism** (Phase 3 Baseline implementation): the
@@ -81,9 +75,8 @@ Built day by day rather than in one sitting.
   genuinely held-out 30% test split in
   [`src/validation/heldout_backtest.py`](src/validation/heldout_backtest.py);
   a regime stress-test (high vs. low predicted-informedness, using this
-  project's own ML classifier's `p_informed(t)` as the regime indicator
-  since cross-repo signal import from vpin-flow-toxicity isn't practical
-  for a self-contained repo — documented explicitly) in
+  project's own ML classifier's `p_informed(t)` as the regime indicator,
+  documented explicitly) in
   [`src/validation/regime_stress_test.py`](src/validation/regime_stress_test.py);
   full write-up connecting results to theory in
   [`research/RESULTS.md`](research/RESULTS.md). **Headline verdict**: the
@@ -97,8 +90,8 @@ Built day by day rather than in one sitting.
   improvement on just 3 fills) — an honest, sample-size-limited result,
   not an overclaimed one.
 
-Stretch goals (full 3-signal integration, multi-asset inventory risk) are
-a bonus beyond these 4 parts, not required for core completion.
+Stretch goals (multi-asset inventory risk) are a bonus beyond these 4
+parts, not required for core completion.
 
 ---
 
@@ -126,11 +119,9 @@ a bonus beyond these 4 parts, not required for core completion.
 - Primary candidate: Level-2 order book + trade data from a crypto
   exchange websocket (Binance/Bybit), matching the granularity needed to
   both simulate quoting and estimate an informedness signal.
-- Reuse (or directly depend on) the informed-flow proxy signal from
-  [order-flow-imbalance](https://github.com/poojitha376sp/order-flow-imbalance)
-  and/or [vpin-flow-toxicity](https://github.com/poojitha376sp/vpin-flow-toxicity)
-  as the "probability the incoming order is informed" input, rather than
-  inventing a fourth, unvalidated proxy.
+- Engineer the informedness/toxicity signal directly from this project's
+  own captured order-flow data (e.g. short-horizon signed volume, quote
+  imbalance) rather than depending on an external proxy.
 
 ### Phase 3 — Baseline implementation
 - Implement the standard Avellaneda-Stoikov market maker: reservation
@@ -141,7 +132,7 @@ a bonus beyond these 4 parts, not required for core completion.
   fills immediately followed by adverse price moves).
 
 ### Phase 4 — Adverse-selection extension
-- Augment the state space with the informedness signal (OFI/VPIN-derived)
+- Augment the state space with the informedness signal
   and re-derive (or numerically solve) the optimal quoting policy so that
   the spread widens and/or skews when the signal indicates elevated
   toxicity.
@@ -158,9 +149,9 @@ classical baseline exists before anything heavier (decision recorded
 question here is specifically *what generates the informedness signal*
 that Phase 4 feeds into the quoting policy:
 - **Now (Part 3, classical ML)**: a gradient boosting classifier trained
-  on order-flow features (from order-flow-imbalance / vpin-flow-toxicity,
-  or engineered directly from this project's own captured data) predicting
-  "is this flow currently informed" — this is the signal both the
+  on order-flow features engineered directly from this project's own
+  captured data, predicting "is this flow currently informed" — this is
+  the signal both the
   heuristic-overlay and principled variants above consume. Classical and
   fast to validate before anything fancier.
 - **Later (Part 4 / stretch, deep learning)**: Cartea, Duran-Martin &
@@ -177,17 +168,15 @@ that Phase 4 feeds into the quoting policy:
 
 ### Phase 5 — Validation (the part most student projects get wrong)
 - Backtest baseline vs. adverse-selection-aware quoting on the same
-  held-out data, using a realistic fill-simulation model (ideally the
-  fill-probability estimator from
-  [hawkes-fill-probability](https://github.com/poojitha376sp/hawkes-fill-probability),
-  not a naive "always fill at quoted price" assumption).
+  held-out data, using a realistic fill-simulation model rather than a
+  naive "always fill at quoted price" assumption.
 - Report inventory risk (variance of inventory path), realized spread
   captured, and adverse-selection cost specifically — the whole point of
   the extension is that this last number should drop relative to the
   baseline without collapsing fill rate to zero.
 - Stress-test both strategies over the highest-toxicity periods identified
-  by VPIN in the data, since that's exactly where the extension is
-  supposed to earn its keep.
+  by the informedness signal in the data, since that's exactly where the
+  extension is supposed to earn its keep.
 
 ### Phase 6 — Deliverables
 - Quoting engine supporting both baseline and adverse-selection-aware
@@ -200,9 +189,6 @@ that Phase 4 feeds into the quoting policy:
   reduce adverse-selection losses) and by how much.
 
 ### Stretch goals
-- Full integration of all three upstream signals (OFI, VPIN, Hawkes fill
-  probability) into a single quoting decision, as the "capstone" that ties
-  the 4-project suite together.
 - Multi-asset inventory risk (quoting correlated instruments
   simultaneously) as a further extension beyond the single-asset case.
 
