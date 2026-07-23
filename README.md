@@ -13,7 +13,7 @@ Part of a 4-project microstructure suite for QuantFest:
 [vpin-flow-toxicity](https://github.com/poojitha376sp/vpin-flow-toxicity) ·
 [hawkes-fill-probability](https://github.com/poojitha376sp/hawkes-fill-probability)
 
-Status: planning phase.
+Status: core project complete (Parts 1-4); stretch goals not yet started.
 
 See [`research/CHEATSHEET.md`](research/CHEATSHEET.md) for the working
 reference doc — academic papers, practitioner writeups, relevant
@@ -74,8 +74,28 @@ Built day by day rather than in one sitting.
   (per-fill cost actually rose slightly, $1.99 → $2.16 → $2.40, an
   honest result on a very small fill count that a larger capture would
   be needed to disentangle further).
-- [ ] **Part 4 — Validation & Deliverables** (Phase 5 + 6): baseline vs.
-  extension backtest, adverse-selection-cost comparison, final write-up.
+- [x] **Part 4 — Validation & Deliverables** (Phase 5 + 6): checked
+  whether Part 3's 3-way backtest was contaminated by in-sample fitting
+  (it was — it replayed the full 240s window, including the ML
+  classifier's own training rows) and reran it restricted to the
+  genuinely held-out 30% test split in
+  [`src/validation/heldout_backtest.py`](src/validation/heldout_backtest.py);
+  a regime stress-test (high vs. low predicted-informedness, using this
+  project's own ML classifier's `p_informed(t)` as the regime indicator
+  since cross-repo signal import from vpin-flow-toxicity isn't practical
+  for a self-contained repo — documented explicitly) in
+  [`src/validation/regime_stress_test.py`](src/validation/regime_stress_test.py);
+  full write-up connecting results to theory in
+  [`research/RESULTS.md`](research/RESULTS.md). **Headline verdict**: the
+  extension's total-adverse-selection-cost win is real and *is*
+  concentrated in the high-toxicity regime (\$12.24 → \$4.07, a 67% drop)
+  — but that win comes almost entirely from trading less there (6 fills
+  → 1), not from pricing the fills it still takes any better (per-fill
+  cost in that same high-toxicity regime actually rises, \$2.04 → \$4.07,
+  on a thin 6→2→1-fill sample); on a genuinely held-out 71s slice the
+  picture is smaller and murkier still (a modest ~5% per-fill
+  improvement on just 3 fills) — an honest, sample-size-limited result,
+  not an overclaimed one.
 
 Stretch goals (full 3-signal integration, multi-asset inventory risk) are
 a bonus beyond these 4 parts, not required for core completion.
