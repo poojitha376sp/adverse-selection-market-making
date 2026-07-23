@@ -158,3 +158,33 @@ Caveat up front, same as the sister cheatsheet: **no firm publishes its actual p
 - **Medium confidence (verify before final citation):** Faycal Drissi's Oxford lecture notes PDF (existence and filename/context confirmed, but content could not be machine-extracted — recommend opening directly before citing specific claims from it); XTX Markets' Bank of Canada paper content (existence confirmed via a URL already surfaced for the sister OFI cheatsheet, content not independently re-extracted here); the general quality/correctness of unvetted third-party GitHub Avellaneda-Stoikov implementations beyond jshellen/HFT (listed as discovery starting points, not code-reviewed); Quantt's guide content (independent educational source, self-declared non-affiliated, but not a primary/peer-reviewed source).
 
 - **Flagged as unconfirmed / not found / explicitly not to be cited as fact:** Dean Markwick's blog (dm13450.github.io) has **no** Avellaneda-Stoikov or adverse-selection post — searched specifically per the brief and not found; same for a QuantStart article specifically on this topic; the third-party Substack claims about Optiver's and HRT's specific quoting formulas/architecture (navnoorbawa.substack.com posts) are **independent commentary, not firm-published sources**, and should not be attributed to Optiver or HRT as confirmed disclosure; no public technical content on adverse-selection or inventory-risk methodology was found for Citadel Securities, Jump Trading, DRW, Tower Research Capital, IMC, or Virtu Financial — absence of evidence is reported as such, not filled in with speculation.
+
+
+---
+
+## AI/ML plan for this project (decision record, 2026-07-23)
+
+ML is treated as a required part of this project, not a stretch add-on —
+staged so a validated classical baseline exists before anything heavier.
+The ML question here is narrower than in the sister projects: this
+project doesn't need to invent an informedness signal from scratch, it
+needs to decide what *generates* the signal that Phase 4's quoting
+extension consumes.
+
+- **Now (Part 3, classical ML)**: a gradient boosting classifier on
+  order-flow features (reusing order-flow-imbalance / vpin-flow-toxicity
+  where possible, per this project's own Phase 2 plan of not inventing a
+  fourth unvalidated proxy) predicting whether current flow is informed.
+  Feeds directly into both the heuristic-overlay and principled-HJB
+  variants in Phase 4 — swapping the signal generator later shouldn't
+  require touching the quoting logic itself.
+- **Later (Part 4 / stretch, deep learning)**: Cartea, Duran-Martin &
+  Sánchez-Betancourt's "Detecting Toxic Flow" (§1) — the online Bayesian
+  neural network ("PULSE") — is the natural drop-in upgrade for the signal
+  generator. Worth validating against Optiver's own honest finding (§4):
+  their AI models recognized adverse selection but still traded at
+  negative EV against informed counterparties. That's the exact failure
+  mode this project's Phase 5 validation needs to rule out explicitly —
+  a classifier that's accurate in isolation doesn't guarantee the quoting
+  policy built on top of it actually protects PnL; both need to be
+  checked, not just the first.

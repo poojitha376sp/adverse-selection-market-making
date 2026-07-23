@@ -52,7 +52,10 @@ Built day by day rather than in one sitting.
   written to `data/processed/` (gitignored, code only).
 - [ ] **Part 3 — Fitting & Extension** (Phase 4 Adverse-selection
   extension): augment the state with the informedness signal, both the
-  heuristic-overlay and principled re-solved variants.
+  heuristic-overlay and principled re-solved variants. The informedness
+  signal itself is a **classical ML classifier** (gradient boosting) in
+  this part; an online-Bayesian deep-learning version is a documented
+  Part 4 stretch. See "AI/ML plan" below and `research/CHEATSHEET.md`.
 - [ ] **Part 4 — Validation & Deliverables** (Phase 5 + 6): baseline vs.
   extension backtest, adverse-selection-cost comparison, final write-up.
 
@@ -109,6 +112,30 @@ a bonus beyond these 4 parts, not required for core completion.
   control problem with toxicity as an explicit state variable, per the
   Guéant-Lehalle-Fernandez-Tapia-style formulation. Report both, since the
   gap between them is itself a useful result.
+
+### AI/ML plan
+ML is a core part of this project, not an afterthought — staged so a solid
+classical baseline exists before anything heavier (decision recorded
+2026-07-23, see `research/CHEATSHEET.md` for full citations). The "AI/ML"
+question here is specifically *what generates the informedness signal*
+that Phase 4 feeds into the quoting policy:
+- **Now (Part 3, classical ML)**: a gradient boosting classifier trained
+  on order-flow features (from order-flow-imbalance / vpin-flow-toxicity,
+  or engineered directly from this project's own captured data) predicting
+  "is this flow currently informed" — this is the signal both the
+  heuristic-overlay and principled variants above consume. Classical and
+  fast to validate before anything fancier.
+- **Later (Part 4 / stretch, deep learning)**: Cartea, Duran-Martin &
+  Sánchez-Betancourt's "Detecting Toxic Flow" (CHEATSHEET.md §1) — an
+  online Bayesian neural network ("PULSE") updating in under 1ms per
+  trade — is the natural upgrade path for the signal generator itself,
+  swapped in without changing Phase 4's quoting logic. Keep Optiver's own
+  finding front of mind while evaluating it (CHEATSHEET.md §4): their AI
+  models could *recognize* adverse selection but still traded at negative
+  EV against informed counterparties, so "the classifier is accurate" and
+  "the quoting policy that consumes it actually protects PnL" are two
+  separate claims — this project's Phase 5 validation needs to check both,
+  not assume the second follows from the first.
 
 ### Phase 5 — Validation (the part most student projects get wrong)
 - Backtest baseline vs. adverse-selection-aware quoting on the same
