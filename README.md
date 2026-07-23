@@ -50,12 +50,30 @@ Built day by day rather than in one sitting.
   9 hypothetical fills (3 bid, 6 ask), inventory ranged −3 to 0 units,
   naive mark-to-market PnL of −$2.96 over the window. Output series
   written to `data/processed/` (gitignored, code only).
-- [ ] **Part 3 — Fitting & Extension** (Phase 4 Adverse-selection
-  extension): augment the state with the informedness signal, both the
-  heuristic-overlay and principled re-solved variants. The informedness
-  signal itself is a **classical ML classifier** (gradient boosting) in
-  this part; an online-Bayesian deep-learning version is a documented
-  Part 4 stretch. See "AI/ML plan" below and `research/CHEATSHEET.md`.
+- [x] **Part 3 — Fitting & Extension** (Phase 4 Adverse-selection
+  extension): informedness features engineered directly from this
+  repo's own captured data (trailing net signed trade volume, top-of-book
+  quote imbalance) in
+  [`src/model/informedness_signal.py`](src/model/informedness_signal.py);
+  gradient-boosting classifier (chronological 70/30 split, no shuffling)
+  predicting a volatility-scaled forward-adverse-move label in
+  [`src/model/ml_informedness_classifier.py`](src/model/ml_informedness_classifier.py)
+  (test ROC-AUC 0.72, precision 1.00 / recall 0.04 at the default 0.5
+  threshold on a ~7% positive class — the continuous probability, not
+  the thresholded label, is what the quoting extension consumes);
+  heuristic-overlay and principled (state-dependent effective risk
+  aversion + Glosten-Milgrom-style additive premium) quoting variants in
+  [`src/model/avellaneda_stoikov_adverse.py`](src/model/avellaneda_stoikov_adverse.py);
+  three-way backtest harness in
+  [`src/backtest/backtest_adverse.py`](src/backtest/backtest_adverse.py).
+  On the same 240s BTCUSDT capture used for Part 2, realized
+  adverse-selection cost (losses on fills followed by an adverse move
+  within 2s) fell from **$17.88 (baseline, 9 fills)** to **$10.78
+  (heuristic, 5 fills)** to **$9.60 (principled, 4 fills)** — driven
+  mainly by fewer, wider-spread fills rather than a lower cost per fill
+  (per-fill cost actually rose slightly, $1.99 → $2.16 → $2.40, an
+  honest result on a very small fill count that a larger capture would
+  be needed to disentangle further).
 - [ ] **Part 4 — Validation & Deliverables** (Phase 5 + 6): baseline vs.
   extension backtest, adverse-selection-cost comparison, final write-up.
 
