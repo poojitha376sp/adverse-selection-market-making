@@ -23,6 +23,28 @@ research continues.
 
 ---
 
+## Execution Roadmap (4 parts)
+
+Built day by day rather than in one sitting.
+
+- [ ] **Part 1 — Foundations** (Phase 1 Research + Phase 2 Data acquisition):
+  derive the Avellaneda-Stoikov reservation price/spread from the HJB
+  equation by hand, stand up a real L2 + trade data pipeline (reusing the
+  informed-flow proxy from order-flow-imbalance / vpin-flow-toxicity).
+- [ ] **Part 2 — Core Mechanism** (Phase 3 Baseline implementation): the
+  standard Avellaneda-Stoikov market maker, backtested for a reference
+  PnL/inventory path.
+- [ ] **Part 3 — Fitting & Extension** (Phase 4 Adverse-selection
+  extension): augment the state with the informedness signal, both the
+  heuristic-overlay and principled re-solved variants.
+- [ ] **Part 4 — Validation & Deliverables** (Phase 5 + 6): baseline vs.
+  extension backtest, adverse-selection-cost comparison, final write-up.
+
+Stretch goals (full 3-signal integration, multi-asset inventory risk) are
+a bonus beyond these 4 parts, not required for core completion.
+
+---
+
 ## Plan of Approach
 
 ### Phase 1 — Research
