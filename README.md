@@ -15,6 +15,12 @@ Part of a 4-project microstructure suite for QuantFest:
 
 Status: planning phase.
 
+See [`research/CHEATSHEET.md`](research/CHEATSHEET.md) for the working
+reference doc — academic papers, practitioner writeups, relevant
+conferences, and what market-making/HFT firms publicly disclose about
+inventory-risk and adverse-selection-aware quoting. Kept up to date as
+research continues.
+
 ---
 
 ## Plan of Approach
